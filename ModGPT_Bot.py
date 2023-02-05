@@ -1,8 +1,5 @@
 import discord
-import re
 import requests
-import random
-import threading
 import asyncio
 
 # Constants
@@ -57,6 +54,27 @@ async def on_message(message):
 
     if "true" in message_process.lower():
         await channel.send(f'WARNING {message.author} -- {warn_reason}')
+    else:
+        pass
+
+
+@client.event
+async def on_message_edit(message_before, message_after):
+    """Event handler for when a message is edited."""
+    if message_after.author == client.user:
+        return
+
+    channel = message_after.channel
+    loop = asyncio.get_event_loop()
+    message_process = await loop.run_in_executor(
+        None, process_message, message_after, message_after.guild.id, message_after.channel.id)
+
+    # Extract warn reason from the message process result
+    warn_reason = message_process.split("|")[1].replace(
+        'Warn Message: "', "")[:-1]+""
+
+    if "true" in message_process.lower():
+        await channel.send(f'WARNING {message_after.author} -- {warn_reason} (EDIT)')
     else:
         pass
 
