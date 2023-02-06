@@ -86,7 +86,7 @@ def process_message(message, guildID, ChannelID):
     """Process the message."""
     message_text = message.content
     tomod = str(PROMPT) + str(message_text) + "\nModGPT(you):"
-    modmsg = get_response(tomod, "en", guildID+ChannelID)
+    modmsg = get_response(tomod, "en", int(str(guildID)+str(ChannelID)))
     print(str(message_text)+" | "+str(modmsg['reply']))
     return modmsg['reply']
 
